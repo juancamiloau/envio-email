@@ -1,0 +1,53 @@
+
+
+repositories {
+    jcenter()
+    mavenLocal()
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenLocal()
+    }
+    dependencies {
+        classpath("net.serenity-bdd:serenity-gradle-plugin:1.7.0")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'net.serenity-bdd.aggregator'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+gradle.startParameter.continueOnFailure = true
+
+tasks.withType (JavaCompile) {
+    options.encoding = propertySourceFileEncoding
+}
+
+
+dependencies {
+   compile group: 'net.serenity-bdd', name: 'serenity-core', version: '1.7.0'
+   compile group: 'net.serenity-bdd', name: 'serenity-junit', version: '1.7.0'
+   compile group: 'net.serenity-bdd', name: 'serenity-cucumber', version: '1.6.4'
+   
+   testCompile group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.7'
+   testCompile 'junit:junit:4.12'
+}
+
+test {
+	include '**/*TestSuite*'
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
+    maxParallelForks = Runtime.runtime.availableProcessors()
+}
+
+
+tasks.withType(Test) {
+    systemProperty 'webdriver.driver', System.getProperty('webdriver.driver', '')
+    systemProperty 'tags', System.getProperty('tags', '')
+}
+
